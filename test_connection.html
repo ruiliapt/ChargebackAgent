@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Connection Test</title>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    <div id="result">Testing...</div>
+    
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            try {
+                console.log('Testing connection to http://localhost:5002/api/disputes...');
+                const response = await fetch('http://localhost:5002/api/disputes');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                resultDiv.innerHTML = `
+                    <h2>✅ Connection Successful!</h2>
+                    <p>Status: ${response.status}</p>
+                    <p>Data type: ${Array.isArray(data) ? 'Array' : typeof data}</p>
+                    <p>Number of items: ${Array.isArray(data) ? data.length : 'N/A'}</p>
+                    <pre>${JSON.stringify(data[0] || data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Connection failed:', error);
+                resultDiv.innerHTML = `
+                    <h2>❌ Connection Failed</h2>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+        
+        testConnection();
+    </script>
+</body>
+</html>
